@@ -1,10 +1,191 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Valentine's Interactive Web Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine 💖</title>
+  <style>
+  :root {
+    --pink: #ff6fae;
+    --rose: #ff9a9e;
+    --peach: #fad0c4;
+    --glass: rgba(255, 255, 255, 0.18);
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(1200px 600px at 20% 10%, #ffd1dc, transparent 40%),
+                radial-gradient(800px 500px at 80% 90%, #ffc3a0, transparent 45%),
+                linear-gradient(135deg, var(--rose), var(--peach));
+    font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .card {
+    position: relative;
+    width: min(92vw, 420px);
+    padding: 36px 28px 56px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.12));
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px) saturate(120%);
+    border: 1px solid rgba(255,255,255,0.35);
+    animation: popIn 0.6s ease-out;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.92) translateY(10px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.4);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 4.5vw, 2.4rem);
+    line-height: 1.2;
+    margin: 12px 0 26px;
+    letter-spacing: 0.3px;
+  }
+
+  .buttons {
+    position: relative;
+    height: 72px;
+  }
+
+  button {
+    padding: 14px 34px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+  }
+
+  #yesBtn {
+    background: linear-gradient(135deg, #34d399, #22c55e);
+    color: #0f3d2e;
+  }
+
+  #noBtn {
+    background: linear-gradient(135deg, #fb7185, #ef4444);
+    color: #4c0519;
+    position: absolute;
+    left: 160px;
+    top: 0;
+  }
+
+  .footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    font-size: 0.8rem;
+    opacity: 0.85;
+  }
+
+  .hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .heart {
+    position: absolute;
+    font-size: 1.6rem;
+    animation: floatUp 3s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+    text-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  }
+
+  @keyframes floatUp {
+    from { opacity: 1; transform: translateY(0) scale(0.8) rotate(0deg); }
+    to { opacity: 0; transform: translateY(-140px) scale(1.6) rotate(10deg); }
+  }
+</style>
 </head>
 <body>
-    <h1>Happy Valentine's Day!</h1>
-    <p>Welcome to our special interactive web page celebrating love and friendship!</p>
-    <!-- Add more content here to enhance your Valentine's theme -->
+
+  <div class="card">
+    <h1 id="question">Will you be my Valentine? 💘</h1>
+    <div class="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+
+  <div class="hearts" id="hearts"></div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const question = document.getElementById('question');
+    const heartsContainer = document.getElementById('hearts');
+
+    function moveNoButton() {
+      const card = document.querySelector('.card');
+      const cardRect = card.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const padding = 10;
+      const maxX = cardRect.width - btnRect.width - padding;
+      const maxY = cardRect.height - btnRect.height - padding;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    noBtn.addEventListener('mouseover', moveNoButton);
+    noBtn.addEventListener('touchstart', moveNoButton);
+
+    yesBtn.addEventListener('click', () => {
+      question.innerHTML = 'Good decision 😌<br/>I love you ❤️';
+      yesBtn.style.display = 'none';
+      noBtn.style.display = 'none';
+      launchHearts();
+    });
+
+    function launchHearts() {
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = '❤️';
+        heart.style.left = Math.random() * window.innerWidth + 'px';
+        heart.style.bottom = '20px';
+        heart.style.animationDelay = Math.random() * 0.5 + 's';
+        heartsContainer.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 3000);
+      }
+    }
+  </script>
+
 </body>
 </html>
